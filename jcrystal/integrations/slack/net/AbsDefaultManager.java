@@ -1,14 +1,19 @@
 package integrations.slack.net;
 import integrations.slack.net.utils.*;
 public abstract class AbsDefaultManager<T> extends NetTask<T>{
-	public static final String BASE_URL = "https://slack.com/api";
+	public static boolean DEBUG = false;
+	public static final String BASE_URL = "https://slack.com";
 	private boolean formData;
 	protected String boundary;
 	public AbsDefaultManager(OnErrorListener onError){
 		super(onError);
 	}
 	@Override protected final T doRequest()throws Exception{
-		java.net.HttpURLConnection connection = (java.net.HttpURLConnection) new java.net.URL(BASE_URL + getUrl()).openConnection();
+		String $url = BASE_URL + getUrl();
+		java.net.HttpURLConnection connection = (java.net.HttpURLConnection) new java.net.URL($url).openConnection();
+		if(DEBUG){
+			System.out.println($url);
+		}
 		connection.setConnectTimeout(NetConfig.TIMEOUT);
 		connection.setRequestMethod(type.name());
 		connection.setRequestProperty("Accept", "application/json");
@@ -34,6 +39,9 @@ public abstract class AbsDefaultManager<T> extends NetTask<T>{
 			_pw.close();
 		}
 		final int responseCode = connection.getResponseCode();
+		if(DEBUG){
+			System.out.println("responseCode " + responseCode);
+		}
 		if(responseCode >= 200 && responseCode <= 299){
 			final StringBuilder resp = HTTPUtils.readResponse(connection.getInputStream());
 			connection.disconnect();
@@ -50,7 +58,12 @@ public abstract class AbsDefaultManager<T> extends NetTask<T>{
 					resp = new StringBuilder("");
 				}
 				connection.disconnect();
-				error = new RequestError(responseCode, resp.toString());
+				String $error = resp.toString();
+				if(DEBUG){
+					System.out.println("error " + $error);
+				}
+				error = new RequestError(responseCode, $error);
+				onPostExecute(null);
 			}
 			else{
 				connection.disconnect();
@@ -97,10 +110,10 @@ public abstract class AbsDefaultManager<T> extends NetTask<T>{
 			final boolean success = json.optBoolean("ok", false);
 			if(success){return json;}
 			if(!success){
-				error = new RequestError(json.optInt("code",0), json.getString("mensaje"));
+				error = new RequestError(json.optInt("code",0), json.getString("error"));
 				return null;
 			}
-			error = new RequestError(TipoError.SERVER_ERROR, json.getString("mensaje"));
+			error = new RequestError(TipoError.SERVER_ERROR, json.getString("error"));
 			return null;
 		}
 	}

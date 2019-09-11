@@ -1,7 +1,7 @@
 package integrations.slack;
 import org.json.JSONObject;
 import java.util.*;
-import java.io.PrintStream;
+import java.io.PrintWriter;
 
 public class JSONUtils {
     public static String jsonQuote(String valor){
@@ -84,7 +84,7 @@ public class JSONUtils {
         		ret += ","+jsonQuote(it.next());
         return ret+"]";
     }
-    public static void jsonQuoteString(PrintStream _pw, List<String> puntos){
+    public static void jsonQuoteString(PrintWriter _pw, List<String> puntos){
         Iterator<String> it = puntos.iterator();
         _pw.print("[");
         if(it.hasNext())_pw.print(jsonQuote(it.next()));
@@ -102,7 +102,7 @@ public class JSONUtils {
             ret += ","+it.next();
         return ret+"]";
     }
-    public static void jsonQuoteLong(PrintStream _pw, List<Long> puntos){
+    public static void jsonQuoteLong(PrintWriter _pw, List<Long> puntos){
         Iterator<Long> it = puntos.iterator();
         _pw.print("[");
         if(it.hasNext())_pw.print(it.next());
@@ -112,7 +112,7 @@ public class JSONUtils {
         }
         _pw.print("]");
     }
-    public static void jsonQuoteInteger(PrintStream _pw, List<Integer> puntos){
+    public static void jsonQuoteInteger(PrintWriter _pw, List<Integer> puntos){
         Iterator<Integer> it = puntos.iterator();
         _pw.print("[");
         if(it.hasNext())_pw.print(it.next());
