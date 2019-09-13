@@ -1,7 +1,7 @@
 package integrations.slack.net;
 import integrations.slack.net.utils.*;
 public abstract class AbsDefaultManager<T> extends NetTask<T>{
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = true;
 	public static final String BASE_URL = "https://slack.com";
 	private boolean formData;
 	protected String boundary;
@@ -33,10 +33,19 @@ public abstract class AbsDefaultManager<T> extends NetTask<T>{
 		}
 		connection.connect();
 		if(type.isPost){
-			java.io.PrintWriter _pw = new java.io.PrintWriter(new java.io.OutputStreamWriter(connection.getOutputStream(), "UTF-8"), false);
-			makeBody(_pw);
-			_pw.flush();
-			_pw.close();
+			if(DEBUG){
+				java.io.ByteArrayOutputStream $baos = new java.io.ByteArrayOutputStream();
+				try(java.io.PrintWriter _pw = new java.io.PrintWriter(new java.io.OutputStreamWriter($baos, "UTF-8"), false)){
+					makeBody(_pw);
+				}
+				System.out.println(new String($baos.toByteArray()));
+				connection.getOutputStream().write($baos.toByteArray());
+			}
+			else{
+				try(java.io.PrintWriter _pw = new java.io.PrintWriter(new java.io.OutputStreamWriter(connection.getOutputStream(), "UTF-8"), false)){
+					makeBody(_pw);
+				}
+			}
 		}
 		final int responseCode = connection.getResponseCode();
 		if(DEBUG){

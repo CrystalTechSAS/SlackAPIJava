@@ -7,6 +7,27 @@ import integrations.slack.net.*;
 import static integrations.slack.JSONUtils.*;
 public class ManagerChat{
 	/**
+	* /api/chat.getPermalink
+	**/
+	public static NetTask<org.json.JSONObject> getPermalink(String token, String channel, String message_ts, On1SuccessListener<integrations.slack.results.PermalinkResponse> onSuccess, OnErrorListener onError){
+		return new AbsDefaultManager.JSONObjectResp(onError){
+			@Override protected String getUrl()throws java.io.UnsupportedEncodingException{
+				String ruta = "/api/chat.getPermalink";
+				String params = null;
+				if(channel != null)
+					params = (params==null?"?":(params + "&")) + "channel=" + java.net.URLEncoder.encode(channel, "UTF-8");
+				if(message_ts != null)
+					params = (params==null?"?":(params + "&")) + "message_ts=" + java.net.URLEncoder.encode(message_ts, "UTF-8");
+				if(params != null)ruta+=params;
+				return ruta;
+			}
+			@Override
+			public void onResponse(org.json.JSONObject result)throws Exception{
+				onSuccess.onSuccess(integrations.slack.results.PermalinkResponse.fromJson(result));
+			}
+		}.authorization(token).doGet().exec();
+	}
+	/**
 	* /api/chat.postMessage
 	**/
 	public static NetTask<org.json.JSONObject> postMessage(String token, String channel, String text, boolean as_user, String attachments, On1SuccessListener<integrations.slack.results.ChatResponse> onSuccess, OnErrorListener onError){
