@@ -45,4 +45,27 @@ public class ManagerConversations{
 			}
 		}.authorization(token).doPost().exec();
 	}
+	/**
+	* /api/conversations.replies
+	**/
+	public static NetTask<org.json.JSONObject> replies(String token, String channel, String ts, On1SuccessListener<integrations.slack.results.RepliesMessagesResponse> onSuccess, OnErrorListener onError){
+		return new AbsDefaultManager.JSONObjectResp(onError){
+			@Override protected String getUrl()throws java.io.UnsupportedEncodingException{
+				String ruta = "/api/conversations.replies";
+				String params = null;
+				if(token != null)
+					params = (params==null?"?":(params + "&")) + "token=" + java.net.URLEncoder.encode(token, "UTF-8");
+				if(channel != null)
+					params = (params==null?"?":(params + "&")) + "channel=" + java.net.URLEncoder.encode(channel, "UTF-8");
+				if(ts != null)
+					params = (params==null?"?":(params + "&")) + "ts=" + java.net.URLEncoder.encode(ts, "UTF-8");
+				if(params != null)ruta+=params;
+				return ruta;
+			}
+			@Override
+			public void onResponse(org.json.JSONObject result)throws Exception{
+				onSuccess.onSuccess(integrations.slack.results.RepliesMessagesResponse.fromJson(result));
+			}
+		}.doGet().exec();
+	}
 }

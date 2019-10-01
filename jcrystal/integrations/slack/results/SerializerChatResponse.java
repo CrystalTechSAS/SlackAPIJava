@@ -13,16 +13,26 @@ public class SerializerChatResponse{
 			PrintWriterUtils.print(_pw, "\"channel\":", jsonQuote(val0));
 			__first = false;
 		}
-		integrations.slack.results.MessageResponse val1 = objeto.message();
+		String val1 = objeto.ts();
 		if(val1 != null){
 			if(__first){
+				PrintWriterUtils.print(_pw, "\"ts\":", jsonQuote(val1));
+				__first = false;
+			}
+			else{
+				PrintWriterUtils.print(_pw, ",\"ts\":", jsonQuote(val1));
+			}
+		}
+		integrations.slack.results.MessageResponse val2 = objeto.message();
+		if(val2 != null){
+			if(__first){
 				_pw.print("\"message\":");
-				SerializerMessageResponse.toJson(_pw, val1);
+				SerializerMessageResponse.toJson(_pw, val2);
 				__first = false;
 			}
 			else{
 				_pw.print(",\"message\":");
-				SerializerMessageResponse.toJson(_pw, val1);
+				SerializerMessageResponse.toJson(_pw, val2);
 			}
 		}
 		_pw.print("}");

@@ -1,7 +1,7 @@
 package integrations.slack.net;
 import integrations.slack.net.utils.*;
 public abstract class AbsDefaultManager<T> extends NetTask<T>{
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 	public static final String BASE_URL = "https://slack.com";
 	private boolean formData;
 	protected String boundary;

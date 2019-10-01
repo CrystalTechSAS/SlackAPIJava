@@ -7,6 +7,9 @@ public class ChatResponse implements Serializable{
 	private String channel;
 	public String channel(){return this.channel;}
 	public void channel(String val){channel = val;}
+	private String ts;
+	public String ts(){return this.ts;}
+	public void ts(String val){ts = val;}
 	private integrations.slack.results.MessageResponse message;
 	public integrations.slack.results.MessageResponse message(){return this.message;}
 	public void message(integrations.slack.results.MessageResponse val){message = val;}
@@ -14,6 +17,7 @@ public class ChatResponse implements Serializable{
 	}
 	protected ChatResponse(org.json.JSONObject json)throws org.json.JSONException{
 		this.channel = json.has("channel")&&!json.isNull("channel")?json.getString("channel"):null;
+		this.ts = json.has("ts")&&!json.isNull("ts")?json.getString("ts"):null;
 		if(json.has("message")  && !json.isNull("message")){
 			this.message = new integrations.slack.results.MessageResponse(json.optJSONObject("message"));
 		}
@@ -31,10 +35,12 @@ public class ChatResponse implements Serializable{
 	//Serializable things
 	private void writeObject(ObjectOutputStream aOutputStream) throws IOException{
 		aOutputStream.writeUTF(channel);
+		aOutputStream.writeUTF(ts);
 		aOutputStream.writeObject(message);
 	}
 	private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException{
 		this.channel = aInputStream.readUTF();
+		this.ts = aInputStream.readUTF();
 		this.message = (MessageResponse)aInputStream.readObject();
 	}
 }
